@@ -5,6 +5,7 @@ import uuid
 
 import AlgorumQuantClient.quant_client
 import AlgorumQuantClient.algorum_types
+import jsonpickle
 
 
 class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClient):
@@ -26,8 +27,16 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
             # Pass constructor arguments to base class
             super(GoldenCrossoverQuantStrategy, self).__init__(url, apikey, launchmode, sid)
 
-            self.State = GoldenCrossoverQuantStrategy.State()
-            self.State.CrossAboveObj = AlgorumQuantClient.algorum_types.CrossAbove()
+            # Load any saved state
+            state_json_str = self.get_data("state")
+
+            if state_json_str is not None:
+                self.State = jsonpickle.decode(state_json_str)
+
+            if self.State is None or launchmode == AlgorumQuantClient.algorum_types.StrategyLaunchMode.Backtesting:
+                self.State = GoldenCrossoverQuantStrategy.State()
+                self.State.CrossAboveObj = AlgorumQuantClient.algorum_types.CrossAbove()
+
             self.StateLock = threading.RLock()
 
             # Subscribe for our symbol data
@@ -89,6 +98,7 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
                 place_order_request.Tag = self.State.CurrentOrderId
 
                 self.place_order(place_order_request)
+                self.set_data("state", self.State)
 
                 msg = 'Placed buy order for ' + str(place_order_request.Quantity) + ' units of ' + self.symbol.Ticker + \
                       ' at price (approx) ' + str(tick_data.LTP) + ', ' + str(tick_data.Timestamp)
@@ -119,6 +129,7 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
                     place_order_request.Tag = self.State.CurrentOrderId
 
                     self.place_order(place_order_request)
+                    self.set_data("state", self.State)
 
                     msg = 'Placed sell order for ' + str(qty) + ' units of ' + self.symbol.Ticker + \
                           ' at price (approx) ' + str(tick_data.LTP) + ', ' + str(tick_data.Timestamp)
@@ -161,6 +172,8 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
 
                 for k, v in stats.items():
                     print('Key: ' + str(k) + ', Value: ' + str(v))
+
+            self.set_data("state", self.State)
         except Exception:
             self.log(AlgorumQuantClient.algorum_types.LogLevel.Error, traceback.format_exc())
 
