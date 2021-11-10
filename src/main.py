@@ -16,7 +16,7 @@ if __name__ == '__main__':
             url = None
 
         if url is None or url == '':
-            url = 'ws://13.127.118.240:5000/quant/engine/api/v1'
+            url = 'ws://3.108.237.136:5000/quant/engine/api/v1'
 
         if 'apiKey' in os.environ:
             apikey = os.environ['apiKey']

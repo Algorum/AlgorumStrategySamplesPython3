@@ -41,9 +41,12 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
 
             # Subscribe for our symbol data
             self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
-                AlgorumQuantClient.algorum_types.SymbolType.Stock,
-                'SBIN',
-                None, 0)
+                AlgorumQuantClient.algorum_types.SymbolType.FuturesIndex,
+                'NIFTY',
+                AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
+                0, 0,
+                AlgorumQuantClient.algorum_types.OptionType.Unspecified,
+                0, 0)
             symbols = [self.symbol]
             self.subscribe_symbols(symbols)
 
@@ -78,11 +81,12 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
                 self.State.LastTick = tick_data
 
             if ema50 > 0 and ema200 > 0 and \
-                    self.State.CrossAboveObj.evaluate(ema50, ema200) and not self.State.Bought and \
+                    self.State.CrossAboveObj.evaluate(ema50, ema200) and \
+                    not self.State.Bought and \
                     self.State.CurrentOrderId is None:
                 self.State.CurrentOrderId = uuid.uuid4().hex
                 place_order_request = AlgorumQuantClient.algorum_types.PlaceOrderRequest()
-                place_order_request.OrderType = AlgorumQuantClient.algorum_types.OrderType.Limit
+                place_order_request.OrderType = AlgorumQuantClient.algorum_types.OrderType.Market
                 place_order_request.Price = tick_data.LTP
                 place_order_request.Quantity = \
                     (GoldenCrossoverQuantStrategy.Capital / tick_data.LTP) * GoldenCrossoverQuantStrategy.Leverage
@@ -93,7 +97,6 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
                 else:
                     place_order_request.TradeExchange = AlgorumQuantClient.algorum_types.TradeExchange.NSE
 
-                place_order_request.TriggerPrice = tick_data.LTP
                 place_order_request.OrderDirection = AlgorumQuantClient.algorum_types.OrderDirection.Buy
                 place_order_request.Tag = self.State.CurrentOrderId
 
@@ -198,13 +201,13 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
             for order in self.State.Orders:
                 if (order.Status == AlgorumQuantClient.algorum_types.OrderStatus.Completed) and \
                         (order.OrderDirection == AlgorumQuantClient.algorum_types.OrderDirection.Buy) and \
-                        order.Symbol.Ticker == tick_date.Ticker:
+                        order.Symbol.Ticker == tick_date.Symbol.Ticker:
                     buy_val += order.FilledQuantity * order.AveragePrice
                     buy_qty += order.FilledQuantity
 
                 if (order.Status == AlgorumQuantClient.algorum_types.OrderStatus.Completed) and \
                         (order.OrderDirection == AlgorumQuantClient.algorum_types.OrderDirection.Sell) and \
-                        order.Symbol.Ticker == tick_date.Ticker:
+                        order.Symbol.Ticker == tick_date.Symbol.Ticker:
                     sell_val += order.FilledQuantity * order.AveragePrice
                     sell_qty += order.FilledQuantity
 
