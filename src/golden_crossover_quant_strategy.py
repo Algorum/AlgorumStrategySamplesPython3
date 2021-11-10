@@ -70,8 +70,10 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
             ema200 = self.Evaluator.ema(200)
 
             if self.State.LastTick is not None and (
-                    datetime.datetime.strptime(tick_data.Timestamp, "%Y-%m-%dT%H:%M:%S") -
-                    datetime.datetime.strptime(self.State.LastTick.Timestamp, "%Y-%m-%dT%H:%M:%S")).total_seconds() < 60:
+                    datetime.datetime.strptime(tick_data.Timestamp,
+                                               AlgorumQuantClient.quant_client.QuantEngineClient.get_date_format(tick_data.Timestamp)) -
+                    datetime.datetime.strptime(self.State.LastTick.Timestamp,
+                                               AlgorumQuantClient.quant_client.QuantEngineClient.get_date_format(self.State.LastTick.Timestamp))).total_seconds() < 60:
                 pass
             else:
                 msg = str(tick_data.Timestamp) + ',' + str(tick_data.LTP) + ', ema50 ' \
