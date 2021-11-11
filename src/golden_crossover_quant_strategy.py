@@ -9,8 +9,8 @@ import jsonpickle
 
 
 class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClient):
-    Capital = 2500000
-    Leverage = 3
+    Capital = 100000
+    Leverage = 3  # 3x Leverage on Capital
 
     class State(object):
         def __init__(self):
@@ -40,6 +40,7 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
             self.StateLock = threading.RLock()
 
             # Subscribe for our symbol data
+            # For India users
             self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
                 AlgorumQuantClient.algorum_types.SymbolType.FuturesIndex,
                 'NIFTY',
@@ -47,6 +48,16 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
                 0, 0,
                 AlgorumQuantClient.algorum_types.OptionType.Unspecified,
                 0, 0)
+
+            # For USA users
+            # self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
+            #     AlgorumQuantClient.algorum_types.SymbolType.Stock,
+            #     'AAPL',
+            #     AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
+            #     0, 0,
+            #     AlgorumQuantClient.algorum_types.OptionType.Unspecified,
+            #     0, 0)
+
             symbols = [self.symbol]
             self.subscribe_symbols(symbols)
 
@@ -71,9 +82,11 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
 
             if self.State.LastTick is not None and (
                     datetime.datetime.strptime(tick_data.Timestamp,
-                                               AlgorumQuantClient.quant_client.QuantEngineClient.get_date_format(tick_data.Timestamp)) -
+                                               AlgorumQuantClient.quant_client.QuantEngineClient.get_date_format(
+                                                   tick_data.Timestamp)) -
                     datetime.datetime.strptime(self.State.LastTick.Timestamp,
-                                               AlgorumQuantClient.quant_client.QuantEngineClient.get_date_format(self.State.LastTick.Timestamp))).total_seconds() < 60:
+                                               AlgorumQuantClient.quant_client.QuantEngineClient.get_date_format(
+                                                   self.State.LastTick.Timestamp))).total_seconds() < 60:
                 pass
             else:
                 msg = str(tick_data.Timestamp) + ',' + str(tick_data.LTP) + ', ema50 ' \
@@ -112,7 +125,7 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
             else:
                 if self.State.CurrentOrder is not None and \
                         ((tick_data.LTP - self.State.CurrentOrder.AveragePrice >= (
-                        self.State.CurrentOrder.AveragePrice * (0.25 / 100))) or
+                                self.State.CurrentOrder.AveragePrice * (0.25 / 100))) or
                          (self.State.CurrentOrder.AveragePrice - tick_data.LTP >= (
                                  self.State.CurrentOrder.AveragePrice * (0.5 / 100)))) and self.State.Bought:
                     qty = self.State.CurrentOrder.FilledQuantity
@@ -166,8 +179,8 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
                     self.State.Bought = False
                     self.State.CurrentOrder = None
                     msg = 'Order Id ' + order.OrderId + ' Sold ' + \
-                        str(order.FilledQuantity) + ' units of ' + order.Symbol.Ticker + ' at price ' + \
-                        str(order.AveragePrice)
+                          str(order.FilledQuantity) + ' units of ' + order.Symbol.Ticker + ' at price ' + \
+                          str(order.AveragePrice)
                     print(msg)
                     self.log(AlgorumQuantClient.algorum_types.LogLevel.Information, msg)
 
@@ -224,4 +237,3 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
             self.log(AlgorumQuantClient.algorum_types.LogLevel.Error, traceback.format_exc())
 
         return stats_map
-
