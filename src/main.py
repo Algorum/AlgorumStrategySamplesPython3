@@ -6,6 +6,7 @@ import uuid
 import AlgorumQuantClient.algorum_types
 import golden_crossover_quant_strategy
 import trend_reversal_quant_strategy
+import support_resistance_quant_strategy
 
 if __name__ == '__main__':
     client = None
@@ -99,6 +100,14 @@ if __name__ == '__main__':
 
         # Trend Reversal quant strategy
         # client = trend_reversal_quant_strategy.TrendReversalQuantStrategy(
+        #     url,
+        #     apikey,
+        #     launchmode,
+        #     sid
+        # )
+
+        # Support Resistance quant strategy
+        # client = support_resistance_quant_strategy.SupportResistanceQuantStrategy(
         #     url,
         #     apikey,
         #     launchmode,

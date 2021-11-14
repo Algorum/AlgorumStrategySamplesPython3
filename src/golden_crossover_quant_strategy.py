@@ -41,22 +41,22 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
 
             # Subscribe for our symbol data
             # For India users
-            # self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
-            #     AlgorumQuantClient.algorum_types.SymbolType.FuturesIndex,
-            #     'NIFTY',
-            #     AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
-            #     0, 0,
-            #     AlgorumQuantClient.algorum_types.OptionType.Unspecified,
-            #     0, 0)
-
-            # For USA users
             self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
-                AlgorumQuantClient.algorum_types.SymbolType.Stock,
-                'AAPL',
+                AlgorumQuantClient.algorum_types.SymbolType.FuturesIndex,
+                'NIFTY',
                 AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
                 0, 0,
                 AlgorumQuantClient.algorum_types.OptionType.Unspecified,
                 0, 0)
+
+            # For USA users
+            # self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
+            #     AlgorumQuantClient.algorum_types.SymbolType.Stock,
+            #     'AAPL',
+            #     AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
+            #     0, 0,
+            #     AlgorumQuantClient.algorum_types.OptionType.Unspecified,
+            #     0, 0)
 
             symbols = [self.symbol]
             self.subscribe_symbols(symbols)

@@ -8,7 +8,7 @@ import AlgorumQuantClient.algorum_types
 import jsonpickle
 
 
-class TrendReversalQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClient):
+class SupportResistanceQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClient):
     Capital = 100000
     Leverage = 3  # 3x Leverage on Capital
     DIRECTION_UP = 1
@@ -23,12 +23,12 @@ class TrendReversalQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClie
             self.CurrentOrderId = None
             self.CurrentOrder = None
             self.CrossAboveObj = None
-            self.DirectionReversed = False
+            self.TouchedSupport = False
 
     def __init__(self, url, apikey, launchmode, sid):
         try:
             # Pass constructor arguments to base class
-            super(TrendReversalQuantStrategy, self).__init__(url, apikey, launchmode, sid)
+            super(SupportResistanceQuantStrategy, self).__init__(url, apikey, launchmode, sid)
 
             # Load any saved state
             state_json_str = self.get_data("state")
@@ -37,7 +37,7 @@ class TrendReversalQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClie
                 self.State = jsonpickle.decode(state_json_str)
 
             if self.State is None or launchmode == AlgorumQuantClient.algorum_types.StrategyLaunchMode.Backtesting:
-                self.State = TrendReversalQuantStrategy.State()
+                self.State = SupportResistanceQuantStrategy.State()
                 self.State.CrossAboveObj = AlgorumQuantClient.algorum_types.CrossAbove()
 
             self.StateLock = threading.RLock()
@@ -81,8 +81,8 @@ class TrendReversalQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClie
             self.State.CurrentTick = tick_data
 
             # Get the long and short trend
-            (long_direction, long_strength) = self.Evaluator.trend(60)
-            (short_direction, short_strength) = self.Evaluator.trend(10)
+            (support_value, support_score, resistance_value, resistance_score) = \
+                self.Evaluator.support_resistance(60, 0, 10)
 
             if self.State.LastTick is not None and (
                     datetime.datetime.strptime(tick_data.Timestamp,
@@ -93,34 +93,35 @@ class TrendReversalQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClie
                                                    self.State.LastTick.Timestamp))).total_seconds() < 60:
                 pass
             else:
-                msg = str(tick_data.Timestamp) + ',' + str(tick_data.LTP) + ', ld ' \
-                      + str(long_direction) + ', ls ' + str(long_strength) + ', sd ' \
-                      + str(short_direction) + ', ls ' + str(short_strength)
+                msg = str(tick_data.Timestamp) + ',' + str(tick_data.LTP) + ', sv ' \
+                      + str(support_value) + ', ss ' + str(support_score) + ', rv ' \
+                      + str(resistance_value) + ', rs ' + str(resistance_score)
                 print(msg)
                 self.log(AlgorumQuantClient.algorum_types.LogLevel.Information, msg)
                 self.State.LastTick = tick_data
 
-            # We wait until the long direction is going up and short direction is going down
-            if not self.State.DirectionReversed and long_direction == TrendReversalQuantStrategy.DIRECTION_UP and \
-                    short_direction == TrendReversalQuantStrategy.DIRECTION_DOWN:
-                self.State.DirectionReversed = True
+            # We wait until the stock price touches below the support value
+            if not self.State.TouchedSupport and support_score > 0 and tick_data.LTP <= support_value and \
+                    not self.State.Bought:
+                self.State.TouchedSupport = True
 
-            # We BUY the stock when the long direction was strongly DOWN and the short direction just
-            # started moving UP
-            if long_direction == TrendReversalQuantStrategy.DIRECTION_DOWN and long_strength >= 7 and \
-                    short_direction == TrendReversalQuantStrategy.DIRECTION_UP and \
-                    short_strength >= 3 and self.State.DirectionReversed and \
+            # We BUY the stock when the stock price touches below the support value and then moves above the
+            # support value, and is below the half the distance to the resistance value
+            if support_score > 0 and tick_data.LTP > support_value and \
+                    resistance_score > 0 and \
+                    tick_data.LTP < resistance_value - ((resistance_value - tick_data.LTP) / 2) and \
+                    self.State.TouchedSupport and \
                     not self.State.Bought and \
                     self.State.CurrentOrderId is None:
 
-                self.State.DirectionReversed = False
+                self.State.TouchedSupport = False
 
                 self.State.CurrentOrderId = uuid.uuid4().hex
                 place_order_request = AlgorumQuantClient.algorum_types.PlaceOrderRequest()
                 place_order_request.OrderType = AlgorumQuantClient.algorum_types.OrderType.Market
                 place_order_request.Price = tick_data.LTP
                 place_order_request.Quantity = \
-                    (TrendReversalQuantStrategy.Capital / tick_data.LTP) * TrendReversalQuantStrategy.Leverage
+                    (SupportResistanceQuantStrategy.Capital / tick_data.LTP) * SupportResistanceQuantStrategy.Leverage
                 place_order_request.Symbol = self.symbol
 
                 if self.LaunchMode == AlgorumQuantClient.algorum_types.StrategyLaunchMode.Backtesting:
@@ -222,7 +223,7 @@ class TrendReversalQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClie
         stats_map = None
 
         try:
-            stats_map = {"Capital": TrendReversalQuantStrategy.Capital, "Order Count": len(self.State.Orders)}
+            stats_map = {"Capital": SupportResistanceQuantStrategy.Capital, "Order Count": len(self.State.Orders)}
 
             buy_val = 0.0
             sell_val = 0.0
@@ -247,7 +248,7 @@ class TrendReversalQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClie
 
             pl = sell_val - buy_val
             stats_map['PL'] = pl
-            stats_map['Portfolio Value'] = TrendReversalQuantStrategy.Capital + pl
+            stats_map['Portfolio Value'] = SupportResistanceQuantStrategy.Capital + pl
 
             self.log(AlgorumQuantClient.algorum_types.LogLevel.Information, "PL: " + str(pl))
             self.log(AlgorumQuantClient.algorum_types.LogLevel.Information,
