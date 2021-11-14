@@ -41,22 +41,22 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
 
             # Subscribe for our symbol data
             # For India users
-            self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
-                AlgorumQuantClient.algorum_types.SymbolType.FuturesIndex,
-                'NIFTY',
-                AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
-                0, 0,
-                AlgorumQuantClient.algorum_types.OptionType.Unspecified,
-                0, 0)
-
-            # For USA users
             # self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
-            #     AlgorumQuantClient.algorum_types.SymbolType.Stock,
-            #     'AAPL',
+            #     AlgorumQuantClient.algorum_types.SymbolType.FuturesIndex,
+            #     'NIFTY',
             #     AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
             #     0, 0,
             #     AlgorumQuantClient.algorum_types.OptionType.Unspecified,
             #     0, 0)
+
+            # For USA users
+            self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
+                AlgorumQuantClient.algorum_types.SymbolType.Stock,
+                'AAPL',
+                AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
+                0, 0,
+                AlgorumQuantClient.algorum_types.OptionType.Unspecified,
+                0, 0)
 
             symbols = [self.symbol]
             self.subscribe_symbols(symbols)
@@ -132,7 +132,7 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
 
                     self.State.CurrentOrderId = uuid.uuid4().hex
                     place_order_request = AlgorumQuantClient.algorum_types.PlaceOrderRequest()
-                    place_order_request.OrderType = AlgorumQuantClient.algorum_types.OrderType.Limit
+                    place_order_request.OrderType = AlgorumQuantClient.algorum_types.OrderType.Market
                     place_order_request.Price = tick_data.LTP
                     place_order_request.Quantity = qty
                     place_order_request.Symbol = self.symbol
@@ -232,6 +232,10 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
             pl = sell_val - buy_val
             stats_map['PL'] = pl
             stats_map['Portfolio Value'] = GoldenCrossoverQuantStrategy.Capital + pl
+
+            self.log(AlgorumQuantClient.algorum_types.LogLevel.Information, "PL: " + str(pl))
+            self.log(AlgorumQuantClient.algorum_types.LogLevel.Information,
+                     "Portfolio Value: " + str(stats_map['Portfolio Value']))
 
         except Exception:
             self.log(AlgorumQuantClient.algorum_types.LogLevel.Error, traceback.format_exc())
