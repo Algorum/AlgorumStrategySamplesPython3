@@ -5,6 +5,7 @@ import uuid
 
 import AlgorumQuantClient.algorum_types
 import golden_crossover_quant_strategy
+import trend_reversal_quant_strategy
 
 if __name__ == '__main__':
     client = None
@@ -16,7 +17,7 @@ if __name__ == '__main__':
             url = None
 
         if url is None or url == '':
-            url = 'ws://3.108.237.136:5000/quant/engine/api/v1'
+            url = 'ws://3.110.104.106:5000/quant/engine/api/v1'
 
         if 'apiKey' in os.environ:
             apikey = os.environ['apiKey']
@@ -88,12 +89,21 @@ if __name__ == '__main__':
 
         url += '?sid=' + sid + '&apiKey=' + apikey + '&launchMode=' + launchmode + '&brokerageCountry=' + brokerage_country
 
+        # Golden crossover quant strategy
         client = golden_crossover_quant_strategy.GoldenCrossoverQuantStrategy(
             url,
             apikey,
             launchmode,
             sid
         )
+
+        # Trend Reversal quant strategy
+        # client = trend_reversal_quant_strategy.TrendReversalQuantStrategy(
+        #     url,
+        #     apikey,
+        #     launchmode,
+        #     sid
+        # )
 
         if 'brokeragePlatform' in os.environ:
             brokerage_platform = os.environ['brokeragePlatform']
