@@ -52,7 +52,7 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
             # For USA users
             # self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
             #     AlgorumQuantClient.algorum_types.SymbolType.Stock,
-            #     'AAPL',
+            #     'MSFT',
             #     AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
             #     0, 0,
             #     AlgorumQuantClient.algorum_types.OptionType.Unspecified,
@@ -67,7 +67,7 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
                 AlgorumQuantClient.algorum_types.CreateIndicatorRequest(
                     self.symbol,
                     AlgorumQuantClient.algorum_types.CandlePeriod.Minute,
-                    5))
+                    1))
         except Exception:
             print(traceback.format_exc())
             self.log(AlgorumQuantClient.algorum_types.LogLevel.Error, traceback.format_exc())
@@ -106,6 +106,7 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
                 place_order_request.Quantity = \
                     (GoldenCrossoverQuantStrategy.Capital / tick_data.LTP) * GoldenCrossoverQuantStrategy.Leverage
                 place_order_request.Symbol = self.symbol
+                place_order_request.Timestamp = tick_data.Timestamp
 
                 if self.LaunchMode == AlgorumQuantClient.algorum_types.StrategyLaunchMode.Backtesting:
                     place_order_request.TradeExchange = AlgorumQuantClient.algorum_types.TradeExchange.PAPER
@@ -114,6 +115,8 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
 
                 place_order_request.OrderDirection = AlgorumQuantClient.algorum_types.OrderDirection.Buy
                 place_order_request.Tag = self.State.CurrentOrderId
+                place_order_request.SlippageType = AlgorumQuantClient.algorum_types.SlippageType.TIME
+                place_order_request.Slippage = 1000
 
                 self.place_order(place_order_request)
                 self.set_data("state", self.State)
@@ -125,9 +128,9 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
             else:
                 if self.State.CurrentOrder is not None and \
                         ((tick_data.LTP - self.State.CurrentOrder.AveragePrice >= (
-                                self.State.CurrentOrder.AveragePrice * (0.25 / 100))) or
+                                self.State.CurrentOrder.AveragePrice * (0.1 / 100))) or
                          (self.State.CurrentOrder.AveragePrice - tick_data.LTP >= (
-                                 self.State.CurrentOrder.AveragePrice * (0.5 / 100)))) and self.State.Bought:
+                                 self.State.CurrentOrder.AveragePrice * (0.25 / 100)))) and self.State.Bought:
                     qty = self.State.CurrentOrder.FilledQuantity
 
                     self.State.CurrentOrderId = uuid.uuid4().hex
@@ -136,6 +139,7 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
                     place_order_request.Price = tick_data.LTP
                     place_order_request.Quantity = qty
                     place_order_request.Symbol = self.symbol
+                    place_order_request.Timestamp = tick_data.Timestamp
 
                     if self.LaunchMode == AlgorumQuantClient.algorum_types.StrategyLaunchMode.Backtesting:
                         place_order_request.TradeExchange = AlgorumQuantClient.algorum_types.TradeExchange.PAPER
@@ -145,6 +149,8 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
                     place_order_request.TriggerPrice = tick_data.LTP
                     place_order_request.OrderDirection = AlgorumQuantClient.algorum_types.OrderDirection.Sell
                     place_order_request.Tag = self.State.CurrentOrderId
+                    place_order_request.SlippageType = AlgorumQuantClient.algorum_types.SlippageType.TIME
+                    place_order_request.Slippage = 1000
 
                     self.place_order(place_order_request)
                     self.set_data("state", self.State)

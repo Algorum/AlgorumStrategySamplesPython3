@@ -70,7 +70,7 @@ class SupportResistanceQuantStrategy(AlgorumQuantClient.quant_client.QuantEngine
                 AlgorumQuantClient.algorum_types.CreateIndicatorRequest(
                     self.symbol,
                     AlgorumQuantClient.algorum_types.CandlePeriod.Minute,
-                    5))
+                    1))
         except Exception:
             print(traceback.format_exc())
             self.log(AlgorumQuantClient.algorum_types.LogLevel.Error, traceback.format_exc())
@@ -123,6 +123,7 @@ class SupportResistanceQuantStrategy(AlgorumQuantClient.quant_client.QuantEngine
                 place_order_request.Quantity = \
                     (SupportResistanceQuantStrategy.Capital / tick_data.LTP) * SupportResistanceQuantStrategy.Leverage
                 place_order_request.Symbol = self.symbol
+                place_order_request.Timestamp = tick_data.Timestamp
 
                 if self.LaunchMode == AlgorumQuantClient.algorum_types.StrategyLaunchMode.Backtesting:
                     place_order_request.TradeExchange = AlgorumQuantClient.algorum_types.TradeExchange.PAPER
@@ -131,6 +132,8 @@ class SupportResistanceQuantStrategy(AlgorumQuantClient.quant_client.QuantEngine
 
                 place_order_request.OrderDirection = AlgorumQuantClient.algorum_types.OrderDirection.Buy
                 place_order_request.Tag = self.State.CurrentOrderId
+                place_order_request.SlippageType = AlgorumQuantClient.algorum_types.SlippageType.TIME
+                place_order_request.Slippage = 1000
 
                 self.place_order(place_order_request)
                 self.set_data("state", self.State)
@@ -153,6 +156,7 @@ class SupportResistanceQuantStrategy(AlgorumQuantClient.quant_client.QuantEngine
                     place_order_request.Price = tick_data.LTP
                     place_order_request.Quantity = qty
                     place_order_request.Symbol = self.symbol
+                    place_order_request.Timestamp = tick_data.Timestamp
 
                     if self.LaunchMode == AlgorumQuantClient.algorum_types.StrategyLaunchMode.Backtesting:
                         place_order_request.TradeExchange = AlgorumQuantClient.algorum_types.TradeExchange.PAPER
@@ -162,6 +166,8 @@ class SupportResistanceQuantStrategy(AlgorumQuantClient.quant_client.QuantEngine
                     place_order_request.TriggerPrice = tick_data.LTP
                     place_order_request.OrderDirection = AlgorumQuantClient.algorum_types.OrderDirection.Sell
                     place_order_request.Tag = self.State.CurrentOrderId
+                    place_order_request.SlippageType = AlgorumQuantClient.algorum_types.SlippageType.TIME
+                    place_order_request.Slippage = 1000
 
                     self.place_order(place_order_request)
                     self.set_data("state", self.State)

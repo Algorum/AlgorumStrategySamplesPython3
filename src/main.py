@@ -18,7 +18,7 @@ if __name__ == '__main__':
             url = None
 
         if url is None or url == '':
-            url = 'ws://3.110.104.106:5000/quant/engine/api/v1'
+            url = 'ws://54.90.218.100:5000/quant/engine/api/v1'
 
         if 'apiKey' in os.environ:
             apikey = os.environ['apiKey']
@@ -26,7 +26,7 @@ if __name__ == '__main__':
             apikey = None
 
         if apikey is None or apikey == '':
-            apikey = '528c9a1b3f8d4382a6af46f8403935dd'
+            apikey = '7d39b33620174025a4daf4f866abe77b'
 
         if 'launchMode' in os.environ:
             launchmode = os.environ['launchMode']
@@ -81,14 +81,15 @@ if __name__ == '__main__':
             brokerage_country = None
 
         if brokerage_country is None or brokerage_country == '':
-            brokerage_country = 'USA'
+            brokerage_country = 'India'
 
         if 'samplingTime' in os.environ:
             sampling_time = os.environ['samplingTime']
         else:
             sampling_time = 15
 
-        url += '?sid=' + sid + '&apiKey=' + apikey + '&launchMode=' + launchmode + '&brokerageCountry=' + brokerage_country
+        url += '?sid=' + sid + '&apiKey=' + apikey + '&launchMode=' + launchmode + '&brokerageCountry=' + \
+               brokerage_country
 
         # Golden crossover quant strategy
         client = golden_crossover_quant_strategy.GoldenCrossoverQuantStrategy(
