@@ -75,21 +75,12 @@ if __name__ == '__main__':
         else:
             two_factor_auth = None
 
-        if 'brokerageCountry' in os.environ:
-            brokerage_country = os.environ['brokerageCountry']
-        else:
-            brokerage_country = None
-
-        if brokerage_country is None or brokerage_country == '':
-            brokerage_country = 'India'
-
         if 'samplingTime' in os.environ:
             sampling_time = os.environ['samplingTime']
         else:
             sampling_time = 15
 
-        url += '?sid=' + sid + '&apiKey=' + apikey + '&launchMode=' + launchmode + '&brokerageCountry=' + \
-               brokerage_country
+        url += '?sid=' + sid + '&apiKey=' + apikey + '&launchMode=' + launchmode
 
         # Golden crossover quant strategy
         client = golden_crossover_quant_strategy.GoldenCrossoverQuantStrategy(
