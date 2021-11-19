@@ -134,12 +134,14 @@ if __name__ == '__main__':
 
             backtestRequest = AlgorumQuantClient.algorum_types.BacktestRequest(
                 startDate, endDate, sid, bk_api_key, bk_api_secret_key,
-                client_code, password, two_factor_auth, sampling_time, brokerage_platform)
+                client_code, password, two_factor_auth, sampling_time, brokerage_platform,
+                golden_crossover_quant_strategy.GoldenCrossoverQuantStrategy.Capital)
             client.backtest(backtestRequest)
         else:
             tradingRequest = AlgorumQuantClient.algorum_types.TradingRequest(
                 bk_api_key, bk_api_secret_key,
-                client_code, password, two_factor_auth, sampling_time, brokerage_platform)
+                client_code, password, two_factor_auth, sampling_time, brokerage_platform,
+                golden_crossover_quant_strategy.GoldenCrossoverQuantStrategy.Capital)
             client.start_trading(tradingRequest)
 
         client.wait()
