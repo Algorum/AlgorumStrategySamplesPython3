@@ -7,6 +7,7 @@ import AlgorumQuantClient.algorum_types
 import golden_crossover_quant_strategy
 import trend_reversal_quant_strategy
 import support_resistance_quant_strategy
+import rsi_quant_strategy
 
 if __name__ == '__main__':
     client = None
@@ -100,6 +101,14 @@ if __name__ == '__main__':
 
         # Support Resistance quant strategy
         # client = support_resistance_quant_strategy.SupportResistanceQuantStrategy(
+        #     url,
+        #     apikey,
+        #     launchmode,
+        #     sid
+        # )
+
+        # RSI quant strategy
+        # client = rsi_quant_strategy.RSIQuantStrategy(
         #     url,
         #     apikey,
         #     launchmode,
