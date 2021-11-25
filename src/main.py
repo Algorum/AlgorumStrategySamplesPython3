@@ -8,6 +8,7 @@ import golden_crossover_quant_strategy
 import trend_reversal_quant_strategy
 import support_resistance_quant_strategy
 import rsi_quant_strategy
+import gapup_quant_strategy
 
 if __name__ == '__main__':
     client = None
@@ -19,7 +20,7 @@ if __name__ == '__main__':
             url = None
 
         if url is None or url == '':
-            url = 'ws://54.90.218.100:5000/quant/engine/api/v1'
+            url = 'ws://52.66.253.87:5000/quant/engine/api/v1'
 
         if 'apiKey' in os.environ:
             apikey = os.environ['apiKey']
@@ -27,7 +28,7 @@ if __name__ == '__main__':
             apikey = None
 
         if apikey is None or apikey == '':
-            apikey = '7d39b33620174025a4daf4f866abe77b'
+            apikey = '528c9a1b3f8d4382a6af46f8403935dd'
 
         if 'launchMode' in os.environ:
             launchmode = os.environ['launchMode']
@@ -115,6 +116,14 @@ if __name__ == '__main__':
         #     sid
         # )
 
+        # GapUp quant strategy
+        # client = gapup_quant_strategy.GapUpQuantStrategy(
+        #     url,
+        #     apikey,
+        #     launchmode,
+        #     sid
+        # )
+
         if 'brokeragePlatform' in os.environ:
             brokerage_platform = os.environ['brokeragePlatform']
         else:
@@ -131,7 +140,7 @@ if __name__ == '__main__':
                 startDate = None
 
             if startDate is None or startDate == '':
-                startDate = datetime.datetime.strptime('07-04-2021', '%d-%m-%Y')
+                startDate = datetime.datetime.strptime('01-03-2021', '%d-%m-%Y')
 
             if 'endDate' in os.environ:
                 endDate = datetime.datetime.strptime(os.environ['endDate'], '%d-%m-%Y')
@@ -139,7 +148,7 @@ if __name__ == '__main__':
                 endDate = None
 
             if endDate is None or endDate == '':
-                endDate = datetime.datetime.strptime('09-04-2021', '%d-%m-%Y')
+                endDate = datetime.datetime.strptime('01-04-2021', '%d-%m-%Y')
 
             backtestRequest = AlgorumQuantClient.algorum_types.BacktestRequest(
                 startDate, endDate, sid, bk_api_key, bk_api_secret_key,
