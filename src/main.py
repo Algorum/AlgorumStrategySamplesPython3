@@ -9,6 +9,7 @@ import trend_reversal_quant_strategy
 import support_resistance_quant_strategy
 import rsi_quant_strategy
 import gapup_quant_strategy
+import index_futures_trend_quant_strategy
 
 if __name__ == '__main__':
     client = None
@@ -118,6 +119,14 @@ if __name__ == '__main__':
 
         # GapUp quant strategy
         # client = gapup_quant_strategy.GapUpQuantStrategy(
+        #     url,
+        #     apikey,
+        #     launchmode,
+        #     sid
+        # )
+
+        # GapUp quant strategy
+        # client = index_futures_trend_quant_strategy.IndexFuturesTrendQuantStrategy(
         #     url,
         #     apikey,
         #     launchmode,
