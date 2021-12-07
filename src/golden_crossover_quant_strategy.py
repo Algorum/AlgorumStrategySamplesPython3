@@ -22,10 +22,10 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
             self.CurrentOrder = None
             self.CrossAboveObj = None
 
-    def __init__(self, url, apikey, launchmode, sid):
+    def __init__(self, url, apikey, launchmode, sid, user_id, trace_ws=False):
         try:
             # Pass constructor arguments to base class
-            super(GoldenCrossoverQuantStrategy, self).__init__(url, apikey, launchmode, sid)
+            super(GoldenCrossoverQuantStrategy, self).__init__(url, apikey, launchmode, sid, user_id, trace_ws)
 
             # Load any saved state
             state_json_str = self.get_data("state")

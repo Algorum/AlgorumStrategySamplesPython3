@@ -21,7 +21,7 @@ if __name__ == '__main__':
             url = None
 
         if url is None or url == '':
-            url = 'ws://52.66.253.87:5000/quant/engine/api/v1'
+            url = 'wss://india-qe-api.algorum.net/quant/engine/api/v1'
 
         if 'apiKey' in os.environ:
             apikey = os.environ['apiKey']
@@ -29,7 +29,7 @@ if __name__ == '__main__':
             apikey = None
 
         if apikey is None or apikey == '':
-            apikey = '528c9a1b3f8d4382a6af46f8403935dd'
+            apikey = '7cbb9c66ddd34dca82b7a7b3a31731c4'
 
         if 'launchMode' in os.environ:
             launchmode = os.environ['launchMode']
@@ -46,6 +46,14 @@ if __name__ == '__main__':
 
         if sid is None or sid == '':
             sid = uuid.uuid4().hex
+
+        if 'userId' in os.environ:
+            user_id = os.environ['userId']
+        else:
+            user_id = None
+
+        if user_id is None or user_id == '':
+            user_id = 'bdb78b33f2dd4f9b8d2a008774bd4232'
 
         if 'bkApiKey' in os.environ:
             bk_api_key = os.environ['bkApiKey']
@@ -85,12 +93,16 @@ if __name__ == '__main__':
 
         url += '?sid=' + sid + '&apiKey=' + apikey + '&launchMode=' + launchmode
 
+        print('URL: ' + url)
+        print('User Id: ' + user_id)
+
         # Golden crossover quant strategy
         client = golden_crossover_quant_strategy.GoldenCrossoverQuantStrategy(
             url,
             apikey,
             launchmode,
-            sid
+            sid,
+            user_id
         )
 
         # Trend Reversal quant strategy

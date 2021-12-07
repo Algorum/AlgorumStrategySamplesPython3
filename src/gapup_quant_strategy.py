@@ -23,10 +23,10 @@ class GapUpQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClient):
             self.CrossBelowObj = None
             self.DayChanged = False
 
-    def __init__(self, url, apikey, launchmode, sid):
+    def __init__(self, url, apikey, launchmode, sid, user_id, trace_ws=False):
         try:
             # Pass constructor arguments to base class
-            super(GapUpQuantStrategy, self).__init__(url, apikey, launchmode, sid)
+            super(GapUpQuantStrategy, self).__init__(url, apikey, launchmode, sid, user_id, trace_ws)
 
             # Load any saved state
             state_json_str = self.get_data("state")

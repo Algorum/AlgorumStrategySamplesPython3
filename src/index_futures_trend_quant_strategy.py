@@ -26,10 +26,10 @@ class IndexFuturesTrendQuantStrategy(AlgorumQuantClient.quant_client.QuantEngine
             self.CurrentOrder = None
             self.ProcessingOrder = False
 
-    def __init__(self, url, apikey, launchmode, sid):
+    def __init__(self, url, apikey, launchmode, sid, user_id, trace_ws=False):
         try:
             # Pass constructor arguments to base class
-            super(IndexFuturesTrendQuantStrategy, self).__init__(url, apikey, launchmode, sid)
+            super(IndexFuturesTrendQuantStrategy, self).__init__(url, apikey, launchmode, sid, user_id, trace_ws)
 
             # Load any saved state
             state_json_str = self.get_data("state")

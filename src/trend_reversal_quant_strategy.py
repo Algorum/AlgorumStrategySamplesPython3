@@ -25,10 +25,10 @@ class TrendReversalQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClie
             self.CrossAboveObj = None
             self.DirectionReversed = False
 
-    def __init__(self, url, apikey, launchmode, sid):
+    def __init__(self, url, apikey, launchmode, sid, user_id, trace_ws=False):
         try:
             # Pass constructor arguments to base class
-            super(TrendReversalQuantStrategy, self).__init__(url, apikey, launchmode, sid)
+            super(TrendReversalQuantStrategy, self).__init__(url, apikey, launchmode, sid, user_id, trace_ws)
 
             # Load any saved state
             state_json_str = self.get_data("state")
