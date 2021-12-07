@@ -110,7 +110,8 @@ if __name__ == '__main__':
         #     url,
         #     apikey,
         #     launchmode,
-        #     sid
+        #     sid,
+        #     user_id
         # )
 
         # Support Resistance quant strategy
@@ -118,7 +119,8 @@ if __name__ == '__main__':
         #     url,
         #     apikey,
         #     launchmode,
-        #     sid
+        #     sid,
+        #     user_id
         # )
 
         # RSI quant strategy
@@ -126,7 +128,8 @@ if __name__ == '__main__':
         #     url,
         #     apikey,
         #     launchmode,
-        #     sid
+        #     sid,
+        #     user_id
         # )
 
         # GapUp quant strategy
@@ -134,7 +137,8 @@ if __name__ == '__main__':
         #     url,
         #     apikey,
         #     launchmode,
-        #     sid
+        #     sid,
+        #     user_id
         # )
 
         # GapUp quant strategy
@@ -142,7 +146,8 @@ if __name__ == '__main__':
         #     url,
         #     apikey,
         #     launchmode,
-        #     sid
+        #     sid,
+        #     user_id
         # )
 
         if 'brokeragePlatform' in os.environ:
