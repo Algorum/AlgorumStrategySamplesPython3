@@ -21,7 +21,7 @@ if __name__ == '__main__':
             url = None
 
         if url is None or url == '':
-            url = 'wss://india-qe-api.algorum.net/quant/engine/api/v1'
+            url = 'wss://india-quant-engine-api.algorum.net/quant/engine/api/v1'
 
         if 'apiKey' in os.environ:
             apikey = os.environ['apiKey']
@@ -29,7 +29,7 @@ if __name__ == '__main__':
             apikey = None
 
         if apikey is None or apikey == '':
-            apikey = '7cbb9c66ddd34dca82b7a7b3a31731c4'
+            apikey = '<Your Algorum User API Key>'
 
         if 'launchMode' in os.environ:
             launchmode = os.environ['launchMode']
@@ -45,7 +45,7 @@ if __name__ == '__main__':
             sid = None
 
         if sid is None or sid == '':
-            sid = uuid.uuid4().hex
+            sid = '<Unique id for the strategy>'
 
         if 'userId' in os.environ:
             user_id = os.environ['userId']
@@ -53,7 +53,7 @@ if __name__ == '__main__':
             user_id = None
 
         if user_id is None or user_id == '':
-            user_id = 'bdb78b33f2dd4f9b8d2a008774bd4232'
+            user_id = '<Your Algorum User Id>'
 
         if 'bkApiKey' in os.environ:
             bk_api_key = os.environ['bkApiKey']
@@ -61,7 +61,7 @@ if __name__ == '__main__':
             bk_api_key = None
 
         if bk_api_key is None or bk_api_key == '':
-            bk_api_key = 'PKKQLPM189KFT0V5DUZY'
+            bk_api_key = '<Your Alpaca API Key>'
 
         if 'bkApiSecretKey' in os.environ:
             bk_api_secret_key = os.environ['bkApiSecretKey']
@@ -69,7 +69,7 @@ if __name__ == '__main__':
             bk_api_secret_key = None
 
         if bk_api_secret_key is None or bk_api_secret_key == '':
-            bk_api_secret_key = 'MFt6XHNqi0dp46d3kbhvLCNk2JcLNne4rxopZIu5'
+            bk_api_secret_key = '<Your Alpaca API Secret Key>'
 
         if 'clientCode' in os.environ:
             client_code = os.environ['clientCode']
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         if 'samplingTime' in os.environ:
             sampling_time = os.environ['samplingTime']
         else:
-            sampling_time = 15
+            sampling_time = 60
 
         url += '?sid=' + sid + '&apiKey=' + apikey + '&launchMode=' + launchmode
 
@@ -105,58 +105,13 @@ if __name__ == '__main__':
             user_id
         )
 
-        # Trend Reversal quant strategy
-        # client = trend_reversal_quant_strategy.TrendReversalQuantStrategy(
-        #     url,
-        #     apikey,
-        #     launchmode,
-        #     sid,
-        #     user_id
-        # )
-
-        # Support Resistance quant strategy
-        # client = support_resistance_quant_strategy.SupportResistanceQuantStrategy(
-        #     url,
-        #     apikey,
-        #     launchmode,
-        #     sid,
-        #     user_id
-        # )
-
-        # RSI quant strategy
-        # client = rsi_quant_strategy.RSIQuantStrategy(
-        #     url,
-        #     apikey,
-        #     launchmode,
-        #     sid,
-        #     user_id
-        # )
-
-        # GapUp quant strategy
-        # client = gapup_quant_strategy.GapUpQuantStrategy(
-        #     url,
-        #     apikey,
-        #     launchmode,
-        #     sid,
-        #     user_id
-        # )
-
-        # GapUp quant strategy
-        # client = index_futures_trend_quant_strategy.IndexFuturesTrendQuantStrategy(
-        #     url,
-        #     apikey,
-        #     launchmode,
-        #     sid,
-        #     user_id
-        # )
-
         if 'brokeragePlatform' in os.environ:
             brokerage_platform = os.environ['brokeragePlatform']
         else:
             brokerage_platform = None
 
         if brokerage_platform is None or brokerage_platform == '':
-            brokerage_platform = AlgorumQuantClient.algorum_types.BrokeragePlatform.Alpaca
+            brokerage_platform = AlgorumQuantClient.algorum_types.BrokeragePlatform.NorthEast
 
         # Backtesting mode
         if launchmode == AlgorumQuantClient.algorum_types.StrategyLaunchMode.Backtesting:

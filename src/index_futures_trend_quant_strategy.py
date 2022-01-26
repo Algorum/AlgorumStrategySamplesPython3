@@ -45,7 +45,7 @@ class IndexFuturesTrendQuantStrategy(AlgorumQuantClient.quant_client.QuantEngine
             # Subscribe for our symbol data
             # For India users
             self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
-                AlgorumQuantClient.algorum_types.SymbolType.Index,
+                AlgorumQuantClient.algorum_types.SymbolType.OptionsStock,
                 'NIFTY 50',
                 AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
                 0, 0,

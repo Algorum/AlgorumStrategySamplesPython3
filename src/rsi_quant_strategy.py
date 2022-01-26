@@ -10,7 +10,7 @@ import jsonpickle
 
 class RSIQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClient):
     Capital = 100000
-    Leverage = 3  # 3x Leverage on Capital
+    Leverage = 1  # 1x Leverage on Capital
 
     class State(object):
         def __init__(self):
@@ -44,22 +44,14 @@ class RSIQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClient):
 
             # Subscribe for our symbol data
             # For India users
-            # self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
-            #     AlgorumQuantClient.algorum_types.SymbolType.FuturesIndex,
-            #     'NIFTY',
-            #     AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
-            #     0, 0,
-            #     AlgorumQuantClient.algorum_types.OptionType.Unspecified,
-            #     0, 0)
-
-            # For USA users
             self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
                 AlgorumQuantClient.algorum_types.SymbolType.Stock,
-                'AAPL',
-                AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
-                0, 0,
-                AlgorumQuantClient.algorum_types.OptionType.Unspecified,
-                0, 0)
+                'TATAMOTORS')
+
+            # For USA users
+            # self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
+            #     AlgorumQuantClient.algorum_types.SymbolType.Stock,
+            #     'SPY')
 
             symbols = [self.symbol]
             self.subscribe_symbols(symbols)

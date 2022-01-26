@@ -10,7 +10,7 @@ import jsonpickle
 
 class TrendReversalQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClient):
     Capital = 100000
-    Leverage = 3  # 3x Leverage on Capital
+    Leverage = 1  # 1x Leverage on Capital
     DIRECTION_UP = 1
     DIRECTION_DOWN = 2
 
@@ -45,21 +45,13 @@ class TrendReversalQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineClie
             # Subscribe for our symbol data
             # For India users
             self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
-                AlgorumQuantClient.algorum_types.SymbolType.FuturesIndex,
-                'NIFTY',
-                AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
-                0, 0,
-                AlgorumQuantClient.algorum_types.OptionType.Unspecified,
-                0, 0)
+                AlgorumQuantClient.algorum_types.SymbolType.Stock,
+                'TATAMOTORS')
 
             # For USA users
             # self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
             #     AlgorumQuantClient.algorum_types.SymbolType.Stock,
-            #     'AAPL',
-            #     AlgorumQuantClient.algorum_types.FNOPeriodType.Monthly,
-            #     0, 0,
-            #     AlgorumQuantClient.algorum_types.OptionType.Unspecified,
-            #     0, 0)
+            #     'SPY')
 
             symbols = [self.symbol]
             self.subscribe_symbols(symbols)
