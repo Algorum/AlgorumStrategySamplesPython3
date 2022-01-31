@@ -41,14 +41,14 @@ class GoldenCrossoverQuantStrategy(AlgorumQuantClient.quant_client.QuantEngineCl
 
             # Subscribe for our symbol data
             # For India users
-            # self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
-            #     AlgorumQuantClient.algorum_types.SymbolType.Stock,
-            #     'TATAMOTORS')
-
-            # For USA users
             self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
                 AlgorumQuantClient.algorum_types.SymbolType.Stock,
-                'SPY')
+                'TATAMOTORS')
+
+            # For USA users
+            # self.symbol = AlgorumQuantClient.algorum_types.TradeSymbol(
+            #     AlgorumQuantClient.algorum_types.SymbolType.Stock,
+            #     'SPY')
 
             symbols = [self.symbol]
             self.subscribe_symbols(symbols)
